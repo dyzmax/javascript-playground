@@ -1,0 +1,120 @@
+<html><body onLoad="onLoad();"> 
+    <div id="container"/>
+
+<script type="text/javascript">
+
+var grid;
+var currentX = 0;
+var currentY = 0;
+
+function onLoad() {
+  initializeGrid();
+  setEventListeners();
+}
+
+function initializeGrid() {
+  var container = document.getElementById("container");
+  grid = new SquareGrid(7, 7, 40, 3, 1, container, "black", "red");
+  grid.turnOn(currentX, currentY);
+}
+
+var keys = {37: "left", 38: "up", 39: "right", 40: "down"};
+
+function setEventListeners() {
+  var onKeyDown = function(e) {
+    e = e || window.event;
+
+    grid.turnOff(currentX, currentY);
+    if (e.keyCode == '37') {
+      currentX = currentX-1;
+    } else if (e.keyCode == '38') {
+      currentY = currentY-1;
+    } else if (e.keyCode == '39') {
+      currentX = currentX+1;
+    } else if (e.keyCode == '40') {
+      currentY = currentY+1;
+    }
+    grid.turnOn(currentX, currentY);
+  }
+
+  if (window.addEventListener) {
+    window.addEventListener("keydown", onKeyDown, true);
+  } else if (window.attachEvent) { // IE
+    alert(window);
+    window.attachEvent("onkeydown", onKeyDown);
+  } else {
+    document.addEventListener("keydown", onKeyDown, true);
+  }
+
+}
+
+function SquareGrid (gridSizeX, gridSizeY, squareSize, spaceSize, borderSize, container, backgroundColor, turnOnColor) {
+  this.gridSizeX = gridSizeX;
+  this.gridSizeY = gridSizeY;
+  this.squareSize = squareSize;
+  this.spaceSize = spaceSize;
+  this.borderSize = borderSize;
+  this.container = container;
+  this.backgroundColor = backgroundColor;
+  this.turnOnColor = turnOnColor;
+  this.squares = new Array(gridSizeX);
+
+  var gridSizeXinPx = this.borderSize + this.spaceSize + (this.spaceSize + this.squareSize) * this.gridSizeX;//+ this.spaceSize;
+  var gridSizeYinPx = this.borderSize + this.spaceSize + (this.spaceSize + this.squareSize) * this.gridSizeY;//+ this.spaceSize;
+  this.container.setAttribute("style", "position: absolute; top: 10px; left:30px; width:" + gridSizeXinPx + "px; height: " + gridSizeYinPx + "px; border " + this.borderSize + "px solid #000; background-color:" + this.backgroundColor + ";");
+
+  for (var i = 0; i < this.squares.length; i++) {
+    this.squares[i] = new Array(gridSizeY);
+    for (var j = 0; j < this.gridSizeY; j++) {
+      this.squares[i][j] = new Square(
+	  this.borderSize + this.spaceSize + (this.spaceSize + this.squareSize) * i,
+	  this.borderSize + this.spaceSize + (this.spaceSize + this.squareSize) * j,
+	  this.squareSize, this.container, this.backgroundColor, this.turnOnColor);
+    }
+  }
+}
+
+SquareGrid.prototype.turnOnAll = function () {
+  for (var i = 0; i < this.gridSizeX; i++) {
+    for (var j = 0; j < this.gridSizeY; j++) {
+      this.squares[i][j].turnOn();
+    }
+  }
+};
+
+SquareGrid.prototype.turnOn = function (x, y) {
+  this.squares[x][y].turnOn();
+};
+
+SquareGrid.prototype.turnOff = function (x, y) {
+  this.squares[x][y].turnOff();
+};
+
+function Square (left, top, size, container, backgroundColor, turnOnColor) {
+  this.left = left;
+  this.top = top;
+  this.size = size;
+  this.container = container;
+  this.div;
+  this.backgroundColor = backgroundColor;
+  this.turnOnColor = turnOnColor;
+
+  this.div = document.createElement('div');
+  this.container.appendChild(this.div);
+};
+
+Square.prototype.turnOn = function() {
+  this.changeColor(this.turnOnColor);
+};
+
+Square.prototype.turnOff = function() {
+  this.changeColor(this.backgroundColor);
+};
+
+// TODO - this needs to be made private
+Square.prototype.changeColor = function(color) {
+  this.div.setAttribute("style", "background-color:" + color + ";width:" + this.size + "px;height:" + this.size + "px;position: absolute; top: " + this.top + "px; left: " + this.left+ "px;");
+};
+
+</script>
+</body></html>
