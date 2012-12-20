@@ -1,41 +1,43 @@
 <html><body onLoad="onLoad();"> 
     <div id="container"/>
 
+<script type="text/javascript" src="point.js"></script>
+<script type="text/javascript" src="functional.js"></script>
 <script type="text/javascript" src="square_grid.js"></script>
+<script type="text/javascript" src="moving_point.js"></script>
+<script type="text/javascript" src="simple_snake.js"></script>
 <script type="text/javascript">
 
 var grid;
-var currentX = 0;
-var currentY = 0;
+var game;
 
 function onLoad() {
   initializeGrid();
-  setEventListeners();
+  initializeGame();
 }
 
 function initializeGrid() {
   var container = document.getElementById("container");
-  grid = new SquareGrid(7, 7, 40, 3, 1, container, "black", "red");
-  grid.turnOn(currentX, currentY);
+  grid = new SquareGrid(new Point(7, 7), 40, 3, 1, container, "black", "red", "yellow");
 }
 
-var keys = {37: "left", 38: "up", 39: "right", 40: "down"};
+function initializeGame() {
+  //game = new MovingPoint(grid, new Point(0, 0));
+  game = new SimpleSnake(grid, new Point(0, 0));
+  game.initialDisplay();
 
-function setEventListeners() {
   var onKeyDown = function(e) {
     e = e || window.event;
 
-    grid.turnOff(currentX, currentY);
     if (e.keyCode == '37') {
-      currentX = currentX-1;
+      game.left();
     } else if (e.keyCode == '38') {
-      currentY = currentY-1;
+      game.up();
     } else if (e.keyCode == '39') {
-      currentX = currentX+1;
+      game.right();
     } else if (e.keyCode == '40') {
-      currentY = currentY+1;
+      game.down();
     }
-    grid.turnOn(currentX, currentY);
   }
 
   if (window.addEventListener) {
