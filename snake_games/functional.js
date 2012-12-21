@@ -44,7 +44,7 @@ var _ = {
   partial : function (func) {
     var partialArgs = arguments;
     return function () {
-      var args = [];
+      var args = new Array(0);
       for (var i = 1; i < partialArgs.length; i++) {
 	args.push(partialArgs[i]);
       }
@@ -52,6 +52,6 @@ var _ = {
 	args.push(arg);
       });
       return func.apply(null, args);
-    }
+    };
   }
 };

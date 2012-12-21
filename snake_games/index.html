@@ -1,56 +1,30 @@
-<html><body onLoad="onLoad();"> 
-    <div id="container"/>
+<html>
+<body onLoad="onLoad();">
 
-<script type="text/javascript" src="point.js"></script>
-<script type="text/javascript" src="functional.js"></script>
-<script type="text/javascript" src="square_grid.js"></script>
-<script type="text/javascript" src="moving_point.js"></script>
-<script type="text/javascript" src="simple_snake.js"></script>
-<script type="text/javascript">
+	<div id="container" />
 
-var grid;
-var game;
+	<script type="text/javascript" src="point.js"></script>
+	<script type="text/javascript" src="functional.js"></script>
+	<script type="text/javascript" src="square_grid.js"></script>
+	<script type="text/javascript" src="moving_point.js"></script>
+	<script type="text/javascript" src="simple_snake.js"></script>
+	<script type="text/javascript" src="user_input.js"></script>
+	<script type="text/javascript">
+	
+		function onLoad() {
+			// grid - display
+			var container = document.getElementById("container");
+			var grid = new SquareGrid(new Point(7, 7), 40, 3, 1, container,
+					"black", "green", "pink");
 
-function onLoad() {
-  initializeGrid();
-  initializeGame();
-}
+			// game - game engine
+			//var game = new MovingPoint(grid, new Point(0, 0));
+			var game = new SimpleSnake(grid, new Point(0, 0), 10);
+			game.initialDisplay();
 
-function initializeGrid() {
-  var container = document.getElementById("container");
-  grid = new SquareGrid(new Point(7, 7), 40, 3, 1, container, "black", "red", "yellow");
-}
-
-function initializeGame() {
-  //game = new MovingPoint(grid, new Point(0, 0));
-  game = new SimpleSnake(grid, new Point(0, 0));
-  game.initialDisplay();
-
-  var onKeyDown = function(e) {
-    e = e || window.event;
-
-    if (e.keyCode == '37') {
-      game.left();
-    } else if (e.keyCode == '38') {
-      game.up();
-    } else if (e.keyCode == '39') {
-      game.right();
-    } else if (e.keyCode == '40') {
-      game.down();
-    }
-  }
-
-  if (window.addEventListener) {
-    window.addEventListener("keydown", onKeyDown, true);
-  } else if (window.attachEvent) { // IE
-    alert(window);
-    window.attachEvent("onkeydown", onKeyDown);
-  } else {
-    document.addEventListener("keydown", onKeyDown, true);
-  }
-
-}
-
-
-</script>
-</body></html>
+			// user input (keyboard controls) + main game loop interval
+			new UserInput(game).initialize();
+		}
+	</script>
+</body>
+</html>

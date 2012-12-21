@@ -5,49 +5,26 @@ function MovingPoint (squareGrid, current) {
 }
 
 MovingPoint.prototype.initialDisplay = function() {
-  grid.turnOn(this.current);
+  this.squareGrid.turnOn(this.current);
 };
 
 //TODO private
-MovingPoint.prototype.movePoint = function(newCurrent, duplicatePoint) {
-  if (duplicatePoint !== true) {
-    grid.turnOff(this.current);
-  }
-  this.current = newCurrent;
-  grid.turnOn(this.current);
+MovingPoint.prototype.movePrivate = function(current, moveOperator, duplicatePoint) {
+	var newCurrent = moveOperator(current).wrapAroundIfNeeded(this.squareGrid.gridSize);
+	if (duplicatePoint !== true) {
+		this.squareGrid.turnOff(this.current);
+	}
+	this.current = newCurrent;
+	this.squareGrid.turnOn(this.current);
 };
 
-MovingPoint.prototype.left = function(duplicatePoint) {
-  if (this.leftInvalid()) return true;
-  this.movePoint(new Point(this.current.x - 1, this.current.y), duplicatePoint);
-};
-MovingPoint.prototype.right = function(duplicatePoint) {
-  if (this.rightInvalid()) return true;
-  this.movePoint(new Point(this.current.x + 1, this.current.y), duplicatePoint);
-};
-MovingPoint.prototype.up = function(duplicatePoint) {
-  if (this.upInvalid()) return true;
-  this.movePoint(new Point(this.current.x, this.current.y - 1), duplicatePoint);
-};
-MovingPoint.prototype.down = function(duplicatePoint) {
-  if (this.downInvalid()) return true;
-  this.movePoint(new Point(this.current.x, this.current.y + 1), duplicatePoint);
+MovingPoint.prototype.move = function(moveOperator, duplicatePoint) {
+	this.movePrivate(this.current, moveOperator, duplicatePoint);
 };
 
-//protected, returns true if move invalid
-MovingPoint.prototype.leftInvalid = function() {
-  return this.current.x === 0 ? true : false;
-};
-//protected, returns true if move invalid
-MovingPoint.prototype.rightInvalid = function() {
-  return this.current.x === this.squareGrid.gridSize.x - 1 ? true : false;
-};
-//protected, returns true if move invalid
-MovingPoint.prototype.upInvalid = function() {
-  return this.current.y === 0 ? true : false;
-};
-//protected, returns true if move invalid
-MovingPoint.prototype.downInvalid = function() {
-  return this.current.y === this.squareGrid.gridSize.y - 1 ? true : false;
+MovingPoint.prototype.isMoveInvalidAndNotCausingYouLost = function(moveOperator) {
+	return false;
 };
 
+
+// TODO backend w node.js
