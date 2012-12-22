@@ -17,24 +17,23 @@ UserInput.prototype.initialize = function() {
 
 // TODO private
 UserInput.prototype.createKeyboardEvenListeners = function() {
-	// can this be done better?
-	var realThis = this;
+	var that = this;
 
 	var onKeyDown = function(e) {
 		e = e || window.event;
 
-		var moveOperator = realThis.arrowsToMoveOperators[e.keyCode];
+		var moveOperator = that.arrowsToMoveOperators[e.keyCode];
 
 		// not an arrow key pressed
 		if (!moveOperator) {
 			return;
 		}
 		
-		if (realThis.game.isMoveInvalidAndNotCausingYouLost(moveOperator)) {
+		if (that.game.isMoveInvalidAndNotCausingYouLost(moveOperator)) {
 			return;
 		}
 
-		realThis.lastPressedOperator = moveOperator;
+		that.lastPressedOperator = moveOperator;
 	};
 
 	// bad duplication, but this is browser specific so i do not care - in real
@@ -52,18 +51,17 @@ UserInput.prototype.createKeyboardEvenListeners = function() {
 
 // TODO private
 UserInput.prototype.createInterval = function() {
-	// TODO can this "realThis" be changed to something more tasty?
-	var realThis = this;
+	var that = this;
 	this.interval = window.setInterval(function() {
 		try {
-			realThis.game.move(realThis.lastPressedOperator);
+			that.game.move(that.lastPressedOperator);
 		} catch (e) {
 			if (e instanceof GameOverException) {
 				alert("you lost!");
-				window.clearInterval(realThis.interval);
+				window.clearInterval(that.interval);
 			} else if (e instanceof YouWonException) {
 				alert("you won!");
-				window.clearInterval(realThis.interval);
+				window.clearInterval(that.interval);
 			} else {
 				throw e;
 			}
